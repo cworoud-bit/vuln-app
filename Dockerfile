@@ -1,7 +1,14 @@
-# ⚠️ TP10 : Dockerfile VOLONTAIREMENT mal configuré (à analyser avec trivy config puis corriger).
-FROM node:14
+FROM node:24-alpine AS deps
 WORKDIR /app
-COPY . .
-RUN npm install
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+FROM node:24-alpine
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=deps --chown=node:node /app/node_modules ./node_modules
+COPY --chown=node:node package.json ./
+COPY --chown=node:node src ./src
+USER node
 EXPOSE 3000
-CMD ["npm", "start"]
+CMD ["node", "src/server.js"]
