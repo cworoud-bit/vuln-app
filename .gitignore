@@ -3,3 +3,5 @@ node_modules/
 reports/
 semgrep-before.txt
 reports/
+Dockerfile.old
+semgrep-before.txt
